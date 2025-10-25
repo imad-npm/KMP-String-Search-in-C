@@ -8,7 +8,7 @@ The result is a fast, linear-time search (O(n)), compared to the naive quadratic
 
 
 
-# Motivation and Main Idea
+## Motivation and Main Idea
 
 When a mismatch happens while comparing the pattern to the text, the naive approach restarts the comparison from the next character in the text —
 it shifts the text index i back to where it started +1.
