@@ -14,25 +14,31 @@ When a mismatch happens while comparing the pattern to the text, the naive appro
 it shifts the text index i back to where it started +1.
 
 But this wastes work.
-Why? Because many of the characters you just compared already matched — so restarting ignores that useful information.
+Why? Because **moving text+1 after a failed match is literally just searching the suffixes of the part that already matched**. That’s exactly what happens in KMP, precomputed in the LPS array.
 
-If you look closely, the part of the text right before the mismatch ends with some sequence of characters — a suffix — that may be identical to the prefix of the pattern itself.
+Look closely: the part of the text right before the mismatch ends with some sequence of characters — a suffix — that may be identical to the prefix of the pattern itself.
 
 That overlap means:
 
-instead of moving the pattern all the way back,
-we can jump directly to the point where the prefix = suffix overlap begins.
+* Instead of naively moving the text pointer one by one, we can **jump directly to where the suffix of the failed match aligns with the prefix of the pattern**.
 
-This is the key optimization:
 
-On a mismatch, don’t recheck characters you already know match.
+Every time you restart naive at `text+1`, you’re **just matching the suffix of the previous partial match**.
 
-Use the LPS (Longest Prefix which is also a Suffix) array to jump ahead to the next meaningful comparison.
+Example:
 
-So, rather than always incrementing i step by step,
-KMP smartly adjusts the pattern index j backward to reuse previous matches —
-skipping ahead without missing any possible occurrences.
+```
+Text:    aaaabaaaac
+Pattern: aaaa ccc
+```
 
+* First match: `'aaaa'` matches, then `'b'` mismatches `'c'`.
+* Naive+1 starts at next text char → partial match `'aaa'`.
+* KMP uses `lps[3]=3` → resumes at pattern index 3 → **same suffix matched**.
+
+**The realization:** moving forward in the text is literally exploring the same suffixes KMP already encodes in LPS.
+
+KMP doesn’t waste work — it **reuses the previous matches** by jumping directly to the overlapping prefix-suffix, skipping redundant checks **without missing any occurrences**.
 
 
 
