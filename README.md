@@ -6,6 +6,18 @@ It finds a smaller string (**pattern**) inside a larger one (**text**) efficient
 without rechecking characters after mismatches.
 The result is a fast, linear-time search (O(n)), compared to the naive quadratic approach (O(n×m)).
 
+Sure — here’s a **shorter, more formal** “Motivation” section that focuses precisely on the *genius insight* of KMP 👇
+
+---
+
+##  Motivation — The Genius Behind KMP
+
+In the **naive string search**, every mismatch forces the algorithm to restart the comparison from the next text position, even if part of the pattern was already matched. This repeated rescanning leads to wasted work and a time complexity of O(n×m).
+
+The **genius of KMP** lies in realizing that when a mismatch occurs, the pattern itself often contains the clue to where the next comparison should begin.
+If a **prefix** of the pattern matches a **suffix** of the portion already matched, KMP aligns them directly—allowing the search to “grow from within” the pattern rather than restart from scratch.
+
+This self-overlap reuse, encoded in the **LPS array**, enables KMP to skip redundant checks and ensures the text index never moves backward, achieving true **linear-time matching**.
 
 
 
